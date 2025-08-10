@@ -1,8 +1,4 @@
 {
-<<<<<<< HEAD
-  "dependencies": {
-    "@nestjs/mapped-types": "^2.1.0"
-=======
   "name": "api",
   "version": "0.0.1",
   "description": "",
@@ -27,6 +23,7 @@
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/jwt": "^11.0.0",
+    "@nestjs/mapped-types": "^2.1.0",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.1.6",
     "@nestjs/swagger": "^11.2.0",
@@ -87,6 +84,5 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
->>>>>>> 4c14922905ad527b446e5749a6e66f21d32d0a1d
   }
 }
