@@ -1,0 +1,139 @@
+{
+  "info": {
+    "name": "XAcademy FIFA API",
+    "_postman_id": "2f3f2a4e-12ab-4a2b-9d9f-0000xacademy",
+    "description": "Colección para probar login, players (listado, CRUD, export CSV) e importación por CSV.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "token", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "00 - Root",
+      "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/", "host": ["{{baseUrl}}"], "path": [""] } }
+    },
+    {
+      "name": "01 - Login",
+      "request": {
+        "auth": { "type": "noauth" },
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"1234\"\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth","login"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 200', function () { pm.response.to.have.status(201).or.to.have.status(200); });",
+              "try {",
+              "  const json = pm.response.json();",
+              "  if (json && json.access_token) {",
+              "    pm.environment.set('token', json.access_token);",
+              "    console.log('Token guardado en environment');",
+              "  }",
+              "} catch(e) { console.warn('No JSON en login'); }"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Players list (paginado + filtros)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/players?name={{name}}&club={{club}}&position={{position}}&page={{page}}&limit={{limit}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["players"],
+          "query": [
+            { "key": "name", "value": "" },
+            { "key": "club", "value": "" },
+            { "key": "position", "value": "" },
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "10" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "03 - Players export CSV (usar Send and Download)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/players/export.csv?name={{name}}&club={{club}}&position={{position}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["players", "export.csv"],
+          "query": [
+            { "key": "name", "value": "" },
+            { "key": "club", "value": "" },
+            { "key": "position", "value": "" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "04 - Player detail",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/players/:id", "host": ["{{baseUrl}}"], "path": ["players", ":id"], "variable":[{ "key":"id", "value":"1"}] }
+      }
+    },
+    {
+      "name": "05 - Create player",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Tu Nombre\",\n  \"club\": \"Mi Club\",\n  \"position\": \"MF\",\n  \"rating\": 88,\n  \"nationality\": \"Argentina\",\n  \"year\": 2023,\n  \"skills\": { \"PAC\": 80, \"SHO\": 85, \"PAS\": 86, \"DRI\": 87, \"DEF\": 60, \"PHY\": 70 }\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/players", "host": ["{{baseUrl}}"], "path": ["players"] }
+      }
+    },
+    {
+      "name": "06 - Update player",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"club\": \"Nuevo Club\",\n  \"rating\": 90,\n  \"skills\": { \"PAS\": 90, \"DRI\": 90 },\n  \"year\": 2023\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/players/:id", "host": ["{{baseUrl}}"], "path": ["players", ":id"], "variable": [{ "key": "id", "value": "1" }] }
+      }
+    },
+    {
+      "name": "07 - Delete player",
+      "request": {
+        "method": "DELETE",
+        "url": { "raw": "{{baseUrl}}/players/:id", "host": ["{{baseUrl}}"], "path": ["players", ":id"], "variable": [{ "key": "id", "value": "1" }] }
+      }
+    },
+    {
+      "name": "08 - Import CSV (multipart/form-data)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "file", "type": "file", "src": [] }
+          ]
+        },
+        "url": { "raw": "{{baseUrl}}/players/import-file", "host": ["{{baseUrl}}"], "path": ["players","import-file"] }
+      }
+    }
+  ]
+}

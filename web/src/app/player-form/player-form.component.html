@@ -1,0 +1,23 @@
+<a routerLink="/players">← Volver</a>
+<h2>{{ id ? 'Editar jugador' : 'Crear jugador' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div><label>Nombre</label> <input formControlName="name"></div>
+  <div><label>Club</label> <input formControlName="club"></div>
+  <div><label>Posición</label> <input formControlName="position"></div>
+  <div><label>Rating</label> <input type="number" formControlName="rating"></div>
+  <div><label>Nacionalidad</label> <input formControlName="nationality"></div>
+  <div><label>Año</label> <input type="number" formControlName="year"></div>
+
+  <h3>Skills</h3>
+  <div><label>PAC</label> <input type="number" formControlName="PAC"></div>
+  <div><label>SHO</label> <input type="number" formControlName="SHO"></div>
+  <div><label>PAS</label> <input type="number" formControlName="PAS"></div>
+  <div><label>DRI</label> <input type="number" formControlName="DRI"></div>
+  <div><label>DEF</label> <input type="number" formControlName="DEF"></div>
+  <div><label>PHY</label> <input type="number" formControlName="PHY"></div>
+
+  <button type="submit" [disabled]="loading">{{ id ? 'Guardar' : 'Crear' }}</button>
+</form>
+
+<pre *ngIf="error">{{ error }}</pre>

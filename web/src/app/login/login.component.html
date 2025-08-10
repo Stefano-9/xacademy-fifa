@@ -1,0 +1,22 @@
+<div class="auth-wrap">
+  <div class="card">
+    <h2>Ingresar</h2>
+    <form (ngSubmit)="submit()" #f="ngForm">
+      <label>
+        Usuario
+        <input [(ngModel)]="username" name="username" required />
+      </label>
+
+      <label>
+        Contraseña
+        <input [(ngModel)]="password" name="password" type="password" required />
+      </label>
+
+      <button class="btn primary" [disabled]="loading || !f.form.valid">
+        {{ loading ? 'Ingresando...' : 'Entrar' }}
+      </button>
+
+      <p class="error" *ngIf="error">{{ error }}</p>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,84 @@
+<div class="page-wrap">
+  <header class="header">
+    <h2>Lista de Jugadores</h2>
+    <div class="header-actions">
+      <button class="btn ghost" (click)="logout()">Salir</button>
+      <a class="btn primary" [routerLink]="['/players/new']">+ Nuevo</a>
+    </div>
+  </header>
+
+  <section class="filters" (keyup.enter)="search()">
+    <input [(ngModel)]="name" name="name" placeholder="Nombre" />
+    <input [(ngModel)]="club" name="club" placeholder="Club" />
+    <input [(ngModel)]="position" name="position" placeholder="Posición" />
+
+    <button class="btn" type="button" (click)="search()" [disabled]="loading">🔍 Buscar</button>
+    <button class="btn outline" type="button" (click)="exportCsv()" [disabled]="loading">Exportar CSV</button>
+
+    <div class="spacer"></div>
+
+    <input type="file" accept=".csv" (change)="onFileChange($event)" style="max-width:260px;">
+    <button class="btn" type="button" (click)="onUpload()" [disabled]="!selectedFile || loading">Subir CSV</button>
+
+    <label class="page-size">
+      Por pág:
+      <select [ngModel]="limit" (ngModelChange)="changePageSize($event)">
+        <option [ngValue]="5">5</option>
+        <option [ngValue]="10">10</option>
+        <option [ngValue]="20">20</option>
+        <option [ngValue]="50">50</option>
+      </select>
+    </label>
+  </section>
+
+  <div class="card">
+    <div *ngIf="loading" class="loading">Cargando...</div>
+
+    <table class="table" *ngIf="!loading">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Club</th>
+          <th>Posición</th>
+          <th class="right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of list">
+          <td><a [routerLink]="['/players', p.id]">{{ p.name }}</a></td>
+          <td>{{ p.club }}</td>
+          <td>{{ p.position }}</td>
+          <td class="right">
+            <a class="btn small" [routerLink]="['/players', p.id, 'edit']">Editar</a>
+            <button class="btn small danger" type="button" (click)="delete(p.id)">Eliminar</button>
+          </td>
+        </tr>
+        <tr *ngIf="list.length === 0">
+          <td colspan="4" class="empty">Sin resultados</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="paging" *ngIf="total > 0 && !loading">
+      <div class="hint">Mostrando {{ showingFrom() }}–{{ showingTo() }} de {{ total }}</div>
+      <div class="pager">
+        <button class="btn small" type="button" (click)="goTo(1)" [disabled]="page===1">«</button>
+        <button class="btn small" type="button" (click)="goTo(page-1)" [disabled]="page===1">‹</button>
+
+        <button class="btn small"
+                type="button"
+                *ngFor="let p of pageWindow()"
+                [class.active]="p===page"
+                (click)="goTo(p)">
+          {{ p }}
+        </button>
+
+        <button class="btn small" type="button" (click)="goTo(page+1)" [disabled]="page===totalPages">›</button>
+        <button class="btn small" type="button" (click)="goTo(totalPages)" [disabled]="page===totalPages">»</button>
+      </div>
+    </div>
+  </div>
+
+  <pre *ngIf="importInfo" class="hint">Importados: {{ importInfo.imported }}  |  Errores: {{ importInfo.errors.length }}</pre>
+  <pre *ngIf="error" class="error">{{ error }}</pre>
+</div>

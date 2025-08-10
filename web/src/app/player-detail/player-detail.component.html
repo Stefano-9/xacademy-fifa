@@ -1,0 +1,53 @@
+<div class="page-wrap">
+  <header class="header">
+    <h2>Detalle de Jugador</h2>
+    <div class="header-actions">
+      <a class="btn" [routerLink]="['/players']">← Volver</a>
+      <a class="btn primary" [routerLink]="['/players', player?.id, 'edit']" *ngIf="player">Editar</a>
+    </div>
+  </header>
+
+  <div class="card">
+    <div *ngIf="loading" class="loading">Cargando...</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+
+    <div *ngIf="player && !loading">
+      <h3>{{ player.name }}</h3>
+      <p>Club: <strong>{{ player.club }}</strong></p>
+      <p>Posición: <strong>{{ player.position }}</strong></p>
+      <p>Nacionalidad: <strong>{{ player.nationality }}</strong></p>
+      <p>Rating: <strong>{{ player.rating }}</strong></p>
+      <p>Versiones (años): <strong>{{ versionsYears() }}</strong></p>
+
+      <hr>
+
+      <h4>Skills (último año)</h4>
+      <ul>
+        <li *ngFor="let s of skillsList">
+          {{ s.name }} ({{ s.code }}): <strong>{{ latestSkillValue(s.code) ?? '—' }}</strong>
+        </li>
+      </ul>
+
+      <hr>
+
+      <h4>Timeline por skill</h4>
+      <label>
+        Skill:
+        <select [(ngModel)]="selectedSkill" (ngModelChange)="onSkillChange($event)">
+          <option *ngFor="let s of skillsList" [ngValue]="s.code">{{ s.name }} ({{ s.code }})</option>
+        </select>
+      </label>
+
+      <div class="timeline">
+        <div class="timeline-row" *ngFor="let p of timelineForSelected()">
+          <div class="year">{{ p.year }}</div>
+          <div class="bar">
+            <div class="fill" [style.width.%]="p.value"></div>
+          </div>
+          <div class="val">{{ p.value }}</div>
+        </div>
+        <div *ngIf="timelineForSelected().length === 0" class="hint">Sin datos</div>
+      </div>
+    </div>
+  </div>
+</div>
